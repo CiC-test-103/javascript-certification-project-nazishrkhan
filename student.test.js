@@ -73,7 +73,7 @@ describe('LinkedList System Tests', () => {
 
     const newLinkedList = new LinkedList();
     await newLinkedList.loadFromJSON(fileName);
-
+    // console.log('**********************', newLinkedList.displayStudents())
     expect(newLinkedList.displayStudents()).toBe('AliceJohnson, BobSmith, CharlieBrown');
     expect(newLinkedList.length).toBe(3);
 

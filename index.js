@@ -32,8 +32,9 @@ function main() {
 
 // Command handling logic
 async function handleCommand(command) {
+  // console.log('the commands: ', command, command.trim().split(' '))
   const [operation, ...args] = command.trim().split(' ');
-
+  // console.log('after theyre split: ', operation, args)
   switch (operation) {
     case 'add':
       /**
@@ -46,8 +47,14 @@ async function handleCommand(command) {
        */
         console.log('Adding student...')
         const [name, year, email, specialization] = args
+        // const name = args[0]
+        // const year = args[1]
+        // const email = args[2]
+        // const specialization = args[3]
         // --------> WRITE YOUR CODE BELOW
-
+        let newStudent = new Student(name, year, email, specialization)
+        await studentManagementSystem.addStudent(newStudent)
+          console.log("Finished adding student", studentManagementSystem, newStudent.getString())
         // --------> WRITE YOUR CODE ABOVE
         break;
 
@@ -62,7 +69,11 @@ async function handleCommand(command) {
        */
       console.log('Removing student...')
       // --------> WRITE YOUR CODE BELOW
-      
+      // console.log('the args: ', args)
+      const [removeEmail] = args
+      // const removeEmail = args[0]
+        await studentManagementSystem.removeStudent(removeEmail)
+        console.log(studentManagementSystem)
       // --------> WRITE YOUR CODE ABOVE
       break;
 
@@ -75,6 +86,8 @@ async function handleCommand(command) {
        */
       console.log('Displaying students...')
       // --------> WRITE YOUR CODE BELOW
+      let displayNames = await studentManagementSystem.displayStudents()
+      console.log(displayNames)
 
       // --------> WRITE YOUR CODE ABOVE
       break;
@@ -91,7 +104,10 @@ async function handleCommand(command) {
        */
       console.log('Finding student...')
       // --------> WRITE YOUR CODE BELOW
-      
+      const [findEmail] = args
+        let foundStudent = await studentManagementSystem.findStudent(findEmail)
+        console.log(foundStudent.getString())
+
       // --------> WRITE YOUR CODE ABOVE
       break;
 
@@ -101,13 +117,15 @@ async function handleCommand(command) {
        *  Saves the current LinkedList to a specified JSON file
        *  You will need to do the following:
        *   - Implement LinkedList (run tests locally to check implementation)
-       *   - Grab the args (saveFileName)
+       *   - Grab the args (save[FileName])
        *   - Use implemented functions in LinkedList to save the data
        */
       console.log('Saving data...')
       // --------> WRITE YOUR CODE BELOW
-
+      const [fileName] = args;
+      await studentManagementSystem.saveToJson(fileName)
       // --------> WRITE YOUR CODE ABOVE
+      break;
 
     case "load":
       /**
@@ -120,6 +138,9 @@ async function handleCommand(command) {
        */
       console.log('Loading data...')
       // --------> WRITE YOUR CODE BELOW
+      const [loadedFile] = args
+      await studentManagementSystem.loadFromJSON(loadedFile)
+      console.log(studentManagementSystem)
 
       // --------> WRITE YOUR CODE ABOVE
       break;
@@ -134,7 +155,8 @@ async function handleCommand(command) {
        */
       console.log('Clearing data...')
       // --------> WRITE YOUR CODE BELOW
-
+      await studentManagementSystem.clearStudents()
+      console.log(studentManagementSystem)
       // --------> WRITE YOUR CODE ABOVE
       break;
 
