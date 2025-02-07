@@ -52,24 +52,42 @@ class LinkedList {
    */
   addStudent(newStudent) {
     // TODO
+    // let node = new Node(newStudent);
+    // let current;
+
+    // // If empty, make head and tail
+    // if (!this.head) {
+    //   this.head = node;
+    //   this.tail = node; 
+    // } else {
+    //   current = this.head;
+
+    //   while (current.next) {
+    //     current = current.next;
+    //   }
+
+    //   current.next = node;
+    //   this.tail = node;
+    // }
+
+    // this.length++;
+
     let node = new Node(newStudent);
     let current;
 
-    // If empty, make head and tail
-    if (!this.head) {
+    if (this.length === 0) {
       this.head = node;
-      this.tail = node; 
-    } else {
-      current = this.head;
+      this.tail = node;
 
-      while (current.next) {
+    } else {
+      current = this.head
+
+      while (current.next){
         current = current.next;
       }
-
-      current.next = node;
-      this.tail = node;
+      current.next = node
+      this.tail = node
     }
-
     this.length++;
   }
 
@@ -83,31 +101,63 @@ class LinkedList {
    */
   removeStudent(email) {
     // TODO
-    if (!this.head){
-      return;
-    } else {
-      let current = this.head;
-      let previous;
-      let index = 0;
-      if (this.length === 1 && current.data.getEmail() === email) {
-        this.clearStudents()
-        return
-      }
-      while (current.data.getEmail() !== email && current.next) {
-        index++;
-        previous = current;
-        current = current.next;
-      }
-      if (index === 0 && current.data.getEmail() === email) {
-        this.head = current.next;
-      } else if (index === this.length - 1) {
-        this.tail = previous;
-        previous.next = null;
-      } else if (current.data.getEmail() === email) {
-        previous.next = current.next;
-      }
-      this.length--;
+    // if (!this.head){
+    //   return;
+    // } else {
+    //   let current = this.head;
+    //   let previous;
+    //   let index = 0;
+    //   if (this.length === 1 && current.data.getEmail() === email) {
+    //     this.clearStudents()
+    //     return
+    //   }
+    //   while (current.data.getEmail() !== email && current.next) {
+    //     index++;
+    //     previous = current;
+    //     current = current.next;
+    //   }
+    //   if (index === 0 && current.data.getEmail() === email) {
+    //     this.head = current.next;
+    //   } else if (index === this.length - 1 && current.data.getEmail() === email) {
+    //     this.tail = previous;
+    //     previous.next = null;
+    //   } else if (current.data.getEmail() === email) {
+    //     previous.next = current.next;
+    //   }
+    //   this.length--;
+    // }
+
+    let current = this.head;
+    let previous;
+
+    if (this.length === 0 ) {
+        return "no list";
     }
+
+    if (this.length === 1 && current.data.getEmail() === email){
+        this.clearStudents();
+    } else () => {
+        return "email not found"
+    }
+
+    if (current.data.getEmail() === email) {
+        this.head = current.next;
+        this.length--;
+    } else {
+        while (current.data.getEmail() !== email && current.next){
+            previous = current;
+            current = current.next;
+        }
+        if (!current.next && current.data.getEmail() === email) {
+            this.tail = previous;
+            previous.next = null;
+            this.length--;
+        }else if (current.data.getEmail() === email){
+            previous.next = current.next;
+            this.length--;
+        }
+    }
+
   }
 
   /**
@@ -117,7 +167,7 @@ class LinkedList {
    */
   findStudent(email) {
     // TODO
-    if (!this.head){
+    if (!this.head){  // or condition (length === 0)
       return -1;
     }
     let current = this.head;
@@ -153,7 +203,7 @@ class LinkedList {
    */
   displayStudents() {
     // TODO
-    if (!this.head){
+    if (!this.head){ // or condition (length === 0)
       return "";
     }
     let current = this.head;
@@ -173,7 +223,7 @@ class LinkedList {
    */
   sortStudentsByName() {
     // TODO
-    if(!this.head){
+    if(!this.head){ // or condition (length === 0)
       return [];
     }
     let current = this.head;
@@ -208,7 +258,6 @@ class LinkedList {
   filterByMinYear(minYear) {
     // TODO
     let studentArray = this.sortStudentsByName();
-
     return studentArray.filter((student => student.getYear() >= minYear))
     }
 
@@ -220,19 +269,16 @@ class LinkedList {
   async saveToJson(fileName) {
     // TODO
     const fs = require('fs/promises');
-    // if no list exists write nothing
-    // if (!this.head){
-    //   return;
-    // }
+
     let current = this.head;
     let linkedList = [];
-    // go over the linked list to store the data in the linkedList array above
+
     while(current){
-      // call the student get string function to get all the data for each student
-      linkedList.push(current.data.getString());
+      let student = current.data
+      linkedList.push([student.getName(), student.getYear(), student.getEmail(), student.getSpecialization()])
       current = current.next;
     }
-    //once the while loop is done use the linkedList array to write the data into the filename
+
     await fs.writeFile(fileName, JSON.stringify(linkedList), 'utf8', (err) => {
       if (err) {
         console.error("Error writing file:", err);
@@ -259,37 +305,26 @@ class LinkedList {
     // parse the JSON loaded from the file
     let readLinkedList = JSON.parse(linkedList)
     // readLinkedList = [
-    //   'Name: AliceJohnson, Year: 2, Email: alice@example.com, Specialization: computerScience',
-    //   'Name: BobSmith, Year: 3, Email: bob@example.com, Specialization: Engineering',
-    //   'Name: CharlieBrown, Year: 4, Email: charlie@example.com, Specialization: Mathematics'
+    //   [ 'nazish', '2', 'naz', 'cs' ],
+    //   [ 'anis', '3', 'ark', 'math' ],
+    //   [ 'saqib', '1', 'qibbs', 'science' ]
     // ]
-
-    // create the array that will have each students name, year, email, and specialization
-    let studentFields = []
 
     // create the array that will hold the students after we create them from the fields
     let createdStudentArray = []
 
-
     // loop over the JSON parsed linked list: will be an array with 1 long string for each student
-    readLinkedList.map((student) => {
-      // split each students string to get an array of each field example: ['Name: AliceJohnson', 'Year: 2', etc...]
-      studentFields = student.split(', ').map((field) => {
-        // split each field to separate the key and value, example: ['Name', 'AliceJohnson'] and return the second index: 'AliceJohnson'
-        return field.split(': ')[1]
-      })
-      // after the map completes the studentFields = [ 'AliceJohnson', '2', 'alice@example.com', 'computerScience' ]
-
-      // push the newly created student into the array to store them
-      createdStudentArray.push(new Student(...studentFields))
+    readLinkedList.forEach((student) => {
+      // create each student from the data
+      createdStudentArray.push(new Student(...student))
       // createdStudentArray = [ Student {}, Student {}, Student {} ]
     });
 
     // clear the old linked list
     this.clearStudents()
 
-    // map over each student and use your add student function to create a new linked list
-    createdStudentArray.map((student) => {
+    // iterate over each student and use your add student function to create a new linked list
+    createdStudentArray.forEach((student) => {
       this.addStudent(student)
     })
   }
